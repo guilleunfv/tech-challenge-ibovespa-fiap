@@ -16,31 +16,6 @@ This repository is structured in three main parts:
 
 Este repositorio está estructurado en tres partes principales:
 
-tech-challenge-ibovespa-fiap/
-│
-├── dados-historicos-bigquery/
-│   ├── Dockerfile
-│   ├── main.py
-│   ├── requirements.txt
-│   └── README.md
-│
-├── modelo-arima-streamlit/
-│   ├── app.py
-│   ├── requirements.txt
-│   ├── README.md
-│   └── .streamlit/
-│       └── config.toml
-│
-├── treinamento-modelo-prophet/
-│   ├── Dockerfile
-│   ├── train_prophet.py
-│   └── README.md
-│
-├── .gitignore
-├── LICENSE
-└── README.md
-
-
 ### 1. 📥 [dados-historicos-bigquery](./dados-historicos-bigquery)
 
 Responsável pela **coleta, limpeza e armazenamento** dos dados históricos do IBOVESPA em uma base de dados no BigQuery (Google Cloud).
