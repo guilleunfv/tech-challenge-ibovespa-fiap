@@ -1,0 +1,7 @@
+Flask==2.3.2
+requests==2.31.0
+# Fijamos Numpy a una versión estable para Py 3.10
+numpy==1.23.5
+pandas==1.5.3
+google-cloud-bigquery==3.9.0
+

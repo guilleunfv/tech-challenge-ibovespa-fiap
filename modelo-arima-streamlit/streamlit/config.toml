@@ -1,0 +1,5 @@
+[theme]
+base="light"
+primaryColor="#0C6EF2"       # Azul profissional
+textColor="#4F4F4F"          # Cinza escuro
+font="sans serif"

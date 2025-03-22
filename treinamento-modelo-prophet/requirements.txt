@@ -1,0 +1,13 @@
+pandas
+numpy<2  # Para evitar incompatibilidade com bibliotecas antigas
+matplotlib
+seaborn
+plotly
+cmdstanpy  # Backend necessário para o Prophet
+pmdarima
+flask
+gunicorn
+joblib
+google-cloud-bigquery
+google-cloud-storage
+db-dtypes  # Necessário para manipulação de BigQuery
