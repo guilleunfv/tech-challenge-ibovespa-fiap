@@ -7,5 +7,4 @@ plotly==5.15.0
 google-cloud-storage==2.10.0
 google-auth==2.22.0
 google-auth-oauthlib
-google-oauth-client
 joblib
