@@ -1,5 +1,5 @@
 
-# 🧠 Treinamento Modelo Prophet
+# 🧠 Treinamento Modelo Arima
 
 Scripts para treinamento e avaliação do modelo Prophet para previsão diária do fechamento do índice IBOVESPA.
 
