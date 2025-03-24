@@ -36,7 +36,6 @@ st.markdown("""
 with st.sidebar:
     st.subheader("Integrantes do Grupo:")
     st.markdown("""
-    - Rosicleia Cavalcante Mota  
     - Guillermo Jesus Camahuali Privat  
     - Kelly Priscilla Matos Campos
     """)
