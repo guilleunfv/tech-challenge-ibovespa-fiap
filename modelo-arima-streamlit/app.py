@@ -96,7 +96,7 @@ if not modelo_arima:
     st.stop()
 
 # =========================================
-# Carregando os Dados (Exemplo Simulado)
+# Carregando os Dados 
 # =========================================
 @st.cache_data
 def carregar_dados():
@@ -130,7 +130,7 @@ st.plotly_chart(fig_hist)
 
 st.markdown("""
 **Explicação**: A linha acima mostra a evolução do índice IBOVESPA
-ao longo do tempo, no período de 2015 a 2025 (dados simulados para este exemplo).
+ao longo do tempo, no período de 2015 a 2025.
 """)
 
 # =========================================
