@@ -452,7 +452,7 @@ if teste_real is not None and not teste_real.empty:
         fig_teste = go.Figure()
         fig_teste.add_trace(go.Scatter(x=df_comp.index, y=df_comp['Real'], mode='lines', name='Valor Real', line=dict(color="#007bff")))
         fig_teste.add_trace(go.Scatter(
-            x=pd.concat([df_comp.index, df_comp.index[::-1]]),
+            x=df_comp.index.append(df_comp.index[::-1]),
             y=pd.concat([df_comp["Upper_CI"], df_comp["Lower_CI"][::-1]]),
             fill="toself", fillcolor="rgba(255, 0, 0, 0.1)", line=dict(color="rgba(255,255,255,0)"),
             hoverinfo="skip", name="Intervalo Conf. Teste"
