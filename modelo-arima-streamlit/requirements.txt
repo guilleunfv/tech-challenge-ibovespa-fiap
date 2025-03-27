@@ -5,6 +5,8 @@ pmdarima==2.0.3
 statsmodels==0.14.0
 plotly==5.15.0
 google-cloud-storage==2.10.0
+google-cloud-bigquery  # <-- Adicionado
 google-auth==2.22.0
 google-auth-oauthlib
 joblib
+scipy                  # <-- Adicionado
