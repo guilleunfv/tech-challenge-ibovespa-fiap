@@ -139,39 +139,62 @@ def baixar_modelo_arima_gcs(bucket_name, blob_name, project_id):
 # =========================================
 # Função para Carregar Dados Reais do BigQuery (Cache de Dados)
 # =========================================
-@st.cache_data(ttl=3600, show_spinner="Carregando dados reais do BigQuery...") # Cache por 1 hora
+@st.cache_data(ttl=3600, show_spinner="Carregando dados reais do BigQuery...")
 def carregar_dados_reais_bq(project_id, bq_dataset, bq_table):
     """Carrega dados históricos reais (Data, Fechamento) do BigQuery."""
-    credentials = carregar_credenciais_google()
-    if credentials is None:
-        return None # Erro já reportado
+    st.info("Iniciando carregamento de dados BQ...") # Log 1
+    credentials_local = carregar_credenciais_google()
+    if credentials_local is None:
+         st.error("Falha ao carregar credenciais locais.") # Log erro
+         return None
+
+    # --- LOG DETALHADO DAS CREDENCIAIS ---
+    try:
+        st.info(f"Tentando usar credenciais para Service Account: {credentials_local.service_account_email}") # Log 2
+        st.info(f"Credenciais válidas: {credentials_local.valid}") # Log 3
+        # st.info(f"Escopos da credencial: {credentials_local.scopes}") # Log 4 (pode ser muito verbose)
+    except Exception as cred_e:
+        st.warning(f"Não foi possível obter detalhes da credencial: {cred_e}")
+    # --- FIM DO LOG DETALHADO ---
 
     try:
-        client = bigquery.Client(project=project_id, credentials=credentials)
+        # --- Tente criar o cliente SEM o project_id explícito ---
+        # Às vezes, o cliente infere melhor o projeto das credenciais.
+        # client = bigquery.Client(project=project_id, credentials=credentials_local)
+        st.info("Criando cliente BigQuery SEM project_id explícito...") # Log 5
+        client = bigquery.Client(credentials=credentials_local)
+        st.info(f"Cliente BigQuery criado. Projeto inferido: {client.project}") # Log 6 - Verifica o projeto usado
+        # ---------------------------------------------------------
+
+        # Query original (assumindo colunas Data e Fechamento)
+        nome_coluna_data = "Data"
+        nome_coluna_fechamento = "Fechamento"
+        table_id_completo = f"`{client.project}.{bq_dataset}.{bq_table}`" # Usa projeto inferido
+
         query = f"""
-            SELECT Data, Fechamento
-            FROM `{project_id}.{bq_dataset}.{bq_table}`
-            WHERE Fechamento IS NOT NULL AND DATE(Data) <= CURRENT_DATE() /* Evita dados futuros */
-            ORDER BY Data ASC
+            SELECT {nome_coluna_data}, {nome_coluna_fechamento}
+            FROM {table_id_completo}
+            WHERE {nome_coluna_fechamento} IS NOT NULL AND DATE({nome_coluna_data}) <= CURRENT_DATE()
+            ORDER BY {nome_coluna_data} ASC
         """
-        st.info(f"Executando query no BigQuery: Tabela {bq_dataset}.{bq_table}")
+
+        st.info(f"Executando query na tabela '{bq_table}': {query}") # Log 7 (confirma query)
+
         df = client.query(query).to_dataframe()
 
+        st.success(f"Query executada com sucesso para {table_id_completo}.")
+
+        df.rename(columns={nome_coluna_data: 'Data', nome_coluna_fechamento: 'Fechamento'}, inplace=True)
+
         if df.empty:
-            st.warning("Nenhum dado encontrado no BigQuery com a query executada.")
+            st.warning(f"A query para {table_id_completo} não retornou dados.")
             return pd.DataFrame()
 
-        st.success(f"Dados reais carregados: {df.shape[0]} linhas encontradas.")
-        # Processamento básico inicial
-        df["Data"] = pd.to_datetime(df["Data"])
-        df["Fechamento"] = pd.to_numeric(df["Fechamento"])
-        df.sort_values("Data", inplace=True)
-        # Remove duplicatas de data, mantendo a última ocorrência (mais recente do dia, se houver)
-        df = df.drop_duplicates(subset='Data', keep='last')
+        df = df.drop_duplicates(subset='Data', keep='last') # Mover para depois do rename se necessário
         return df
 
     except Exception as e:
-        st.error(f"Erro ao carregar dados do BigQuery: {e}")
+        st.error(f"Erro DENTRO da execução da query ou processamento: {e}") # Log erro
         st.error(traceback.format_exc())
         return pd.DataFrame()
 
